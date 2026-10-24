@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact | ICON Pipeline E&amp;C</title>
+  <meta name="description" content="Contact ICON Pipeline E&C.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261024a">
+</head>
+<body data-page="contact">
+  <header class="site-header"></header>
+
+  <main>
+    <section class="page-hero">
+      <div class="bg" style="background-image:url('assets/img/photos/banner-contact.jpg')"></div>
+      <div class="container">
+        <div class="breadcrumb"><a href="index.html">Home</a> / Contact</div>
+        <h1>Contact Us</h1>
+        <p>Tell us about your project. We'll get back to you.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container contact-grid">
+        <div class="reveal">
+          <span class="eyebrow">Get in Touch</span>
+          <h2>ICON Pipeline E&amp;C Co., Ltd.</h2>
+          <div class="contact-item"><h3>Head office</h3><p>240/37, 19th Floor, Ayothaya Tower, Soi Ratchada 18,<br>Ratchadapisek Road, Huaykwang,<br>Bangkok 10320, Thailand</p></div>
+          <div class="contact-item"><h3>Equipment yard</h3><p><span class="addr-label">Free zone complex</span>Tongsukla, Sriracha,<br>Chonburi 20230, Thailand</p></div>
+          <div class="contact-item"><h3>Email</h3><p><a href="mailto:info@iconenc.com">info@iconenc.com</a></p></div>
+        </div>
+        <div class="reveal">
+          <!-- Messages are sent by FormSubmit (formsubmit.co) to info@iconenc.com.
+               The first message after going live sends a one-time activation email to info@; click its link once. -->
+          <form id="contact-form">
+            <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <div class="row">
+              <div><label for="name">Name</label><input id="name" name="name" required></div>
+              <div><label for="company">Company</label><input id="company" name="company"></div>
+            </div>
+            <div class="row">
+              <div><label for="email">Email</label><input id="email" name="email" type="email" required></div>
+              <div><label for="phone">Phone</label><input id="phone" name="phone"></div>
+            </div>
+            <label for="message">Message</label>
+            <textarea id="message" name="message" required></textarea>
+            <button class="btn" type="submit">Send Message</button>
+            <p id="form-status" role="status" style="margin-top:14px;font-size:.95rem"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"></footer>
+  <script src="assets/js/main.js?v=20261024a"></script>
+  <script>
+    // Sends the form through FormSubmit; falls back to the visitor's email program if that fails.
+    const to = "info@iconenc.com";
+    document.getElementById("contact-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const f = e.target, btn = f.querySelector("button"), status = document.getElementById("form-status");
+      if (f._honey.value) return;                                   // filled in by spam bots only
+      const data = {
+        name: f.name.value, company: f.company.value, email: f.email.value, phone: f.phone.value, message: f.message.value,
+        _subject: "Website inquiry from " + f.name.value, _template: "table", _captcha: "false",
+      };
+      btn.disabled = true; btn.textContent = "Sending…"; status.textContent = ""; status.style.color = "";
+      try {
+        const r = await fetch(`https://formsubmit.co/ajax/${to}`, {
+          method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(data),
+        });
+        const d = await r.json();
+        if (!r.ok || String(d.success) !== "true") throw new Error(d.message || "Send failed");
+        f.reset();
+        status.style.color = "#1E7B45";
+        status.textContent = "Thank you. Your message has been sent and we'll get back to you soon.";
+      } catch (err) {
+        const body = `Name: ${data.name}\nCompany: ${data.company}\nEmail: ${data.email}\nPhone: ${data.phone}\n\n${data.message}`;
+        status.style.color = "#B3261E";
+        status.innerHTML = `Sorry, the message could not be sent. Please email us at <a href="mailto:${to}?subject=${encodeURIComponent(data._subject)}&body=${encodeURIComponent(body)}">${to}</a>.`;
+      } finally {
+        btn.disabled = false; btn.textContent = "Send Message";
+      }
+    });
+  </script>
+</body>
+</html>
